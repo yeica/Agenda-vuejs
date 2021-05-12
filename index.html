@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <!--BOOTSTRAP-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous" />
+    <!--FONT AWESOME-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <!--ESTILOS GENERALES-->
+    <link rel="stylesheet" href="css/estilos.css" />
+</head>
+
+<body>
+    <!--DIV APP VUE-->
+    <div id="app">
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark" v-bind:style="{ backgroundColor: color + '!important'}">
+                <div class="container">
+                    <!--TITULO NAVBAR-->
+                    <a class="navbar-brand mx-auto" href="index.html">Agenda de Contactos</a>
+                    <!--INPUT COLOR NAVBAR-->
+                    <input @input="establecerColor" v-model="color" type="color" />
+                </div>
+            </nav>
+        </header>
+        <main>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 offset-md-8">
+                        <div class="input-group mb-3 mt-5">
+                            <input @input="buscarContacto" v-model="busqueda" type="text" class="form-control"
+                                placeholder="Buscar..." />
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col">Teléfono</th>
+                                        <th scope="col">Correo</th>
+                                        <th scope="col">Dirección</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(contacto, index) in busquedaArray">
+                                        <td class="align-middle">
+                                            <img v-bind:src="'images/people/' + contacto.foto" />
+                                        </td>
+                                        <td class="align-middle">{{contacto.nombre}}</td>
+                                        <td class="align-middle">{{contacto.telefono}}</td>
+                                        <td class="align-middle">{{contacto.correo}}</td>
+                                        <td class="align-middle">{{contacto.direccion}}</td>
+                                        <td class="align-middle">
+                                            <!--BOTON EDITAR CONTACTO - OPEN MODAL-->
+                                            <button @click="openModal('editar', index)" class="btn btn-primary"
+                                                data-toggle="modal" data-target="#modal"
+                                                v-bind:style="{ backgroundColor: color + '!important'}">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                            <!--BOTON ELIMINAR CONTACTO-->
+                                            <button @click="eliminarContacto(index)" class="btn btn-danger">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10 offset-md-1 text-center mt-3">
+                        <!--BOTON AGREGAR CONTACTO - OPEN MODAL -->
+                        <button @click="openModal('agregar')" type="button" class="btn btn-primary btn-circle btn-xl"
+                            data-toggle="modal" data-target="#modal"
+                            v-bind:style="{ backgroundColor: color + '!important'}">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-hidden="true" ref="vuemodal">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{modalTitulo}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="nombre">Nombre</label>
+                                    <input v-model="nombre" type="text" class="form-control" id="nombre"
+                                        placeholder="Yeyskalyn Cordero Herrera" required autocomplete="off" />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="telefono">Teléfono</label>
+                                        <input v-model="telefono" type="text" class="form-control" id="telefono"
+                                            placeholder="809-223-9530" required autocomplete="off" />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="correo">Correo</label>
+                                        <input v-model="correo" type="email" class="form-control" id="correo"
+                                            placeholder="example@domain.tld" required autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="direccion">Dirección</label>
+                                    <input v-model="direccion" type="text" class="form-control" id="direccion"
+                                        placeholder="C/ Jeremías #10, Sajour, Higuey" required autocomplete="off" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="sexo">Sexo</label>
+                                    <select v-model="sexo" id="sexo" class="form-control" required>
+                                        <option value="none" selected disabled>Escoge...</option>
+                                        <option value="hombre">Hombre</option>
+                                        <option value="mujer">Mujer</option>
+                                    </select>
+                                </div>
+                                <div class="msg-error">{{mensaje}}</div>
+                            </div>
+                            <div class="modal-footer">
+                                <!--BOTON CANCELAR - CLOSE MODAL-->
+                                <button type="button" class="btn btn-secondary" @click="closeModal">
+                                    Cancelar
+                                </button>
+                                <!--BOTON AGREGAR / GUARDAR CAMBIOS DE CONTACTO EN MODAL-->
+                                <button @click="validarForm" class="btn btn-primary"
+                                    v-bind:style="{ backgroundColor: color + '!important'}">
+                                    {{btnText}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <!--Tiene margen superior-->
+        </footer>
+    </div>
+
+    <!--VUE JS-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!--JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <!--SCRIPTS DE BOOTSTRAP-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+    <!--JQUERY MASK-->
+    <script src="js/jquery.mask.js"></script>
+    <!--SCRIPT DE VUE CREADO-->
+    <script src="js/vue.js"></script>
+    <!--SCRIPTS NO DEPENDIENTES DE VUE-->
+    <script src="js/scripts.js"></script>
+</body>
+
+</html>

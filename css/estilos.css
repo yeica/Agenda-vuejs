@@ -1,0 +1,38 @@
+.navbar-brand {
+  font-size: 24px;
+}
+
+.btn {
+  border-color: transparent !important;
+}
+
+.btn-circle.btn-xl {
+  width: 50px;
+  height: 50px;
+  padding: 10px 16px;
+  border-radius: 35px;
+  font-size: 12px;
+  text-align: center;
+  border-color: transparent;
+}
+
+table td img {
+  width: 50px;
+}
+
+table button {
+  width: 40px;
+}
+
+input[type="color"] {
+  width: 30px;
+}
+
+.msg-error {
+  color: var(--red);
+  font-weight: bold;
+}
+
+footer {
+  margin-top: 60px;
+}
